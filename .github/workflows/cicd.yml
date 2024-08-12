@@ -15,7 +15,7 @@ jobs:
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t jiteshjampa26/react-app --build-arg REACT_APP_URL_TO_BACKEND= ${{ secrets.REACT_APP_URL_TO_BACKEND}} .
+        run: docker build -t jiteshjampa26/react-app --build-arg REACT_APP_URL_TO_BACKEND=${{ secrets.REACT_APP_URL_TO_BACKEND }} .
 
       - name: Publish Image to Docker Hub
         run: docker push jiteshjampa26/react-app:latest
@@ -26,7 +26,9 @@ jobs:
     steps:
       - name: Pull Image from Docker Hub
         run: docker pull jiteshjampa26/react-app:latest
-      - name: delete old container
-        run: docker rm -f react-app-container
+
+      - name: Delete Old Container
+        run: docker rm -f react-app-container || true
+
       - name: Run Docker Container
-        run: docker run -d -p 3000:80 --name react-app-container  jiteshjampa26/react-app:latest
+        run: docker run -d -p 3000:80 --name react-app-container jiteshjampa26/react-app:latest
